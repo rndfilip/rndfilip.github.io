@@ -571,7 +571,7 @@
         <h2><i class="ph-bold ph-terminal-window"></i>AI workflow</h2>
         <div class="term">
           <div class="term-bar"><span></span><span></span><span></span><em>recruiter@filip-cv · zsh</em>
-            <button id="replay" data-tip="Replay the Claude Code demo" aria-label="Replay demo"><i class="ph ph-arrow-clockwise"></i></button></div>
+            <button id="replay" data-tip="Replay an example Claude Code workflow" aria-label="Replay demo"><i class="ph ph-arrow-clockwise"></i></button></div>
           <div class="term-body" id="termBody">
             <pre id="termOut" aria-live="polite"></pre>
             <form class="term-in" id="termForm" hidden><label for="termInput" id="termPrompt"></label><input id="termInput" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command"></form>
@@ -716,18 +716,20 @@
   setAccent(store.get('cv-accent') || '');
 
   /* ---------- interactive terminal ---------- */
-  // Intro: replay of the real Claude Code session that built this CV; afterwards a live prompt.
+  // Intro: replay of an example Claude Code data-engineering workflow; afterwards a live prompt.
   const DEMO = [
-    ['p', '~/FunProjects/CV '], ['y', '(main)'], ['p', ' $ '], ['type', 'claude'], ['nl'],
-    ['u', '> '], ['type', 'Build an interactive one-page CV from CV_base.md and put it in a private repo'], ['nl'], ['pause', 500],
-    ['c', '● '], ['o', 'Read CV_base.md, CV.html'], ['nl'], ['pause', 300],
-    ['c', '● '], ['o', 'Bash  gh repo create CV --private --source=.'], ['nl'], ['pause', 300],
-    ['c', '● '], ['o', 'Bash  git checkout -b feat/ats-cv'], ['nl'], ['pause', 300],
-    ['c', '● '], ['o', 'Write CV.html, CV_ats.html, export_pdf.py'], ['nl'], ['pause', 300],
-    ['c', '● '], ['o', 'Bash  uv run python export_pdf.py --check'], ['nl'], ['pause', 600],
-    ['ok', '  Pages: 1 · Keywords: 30/30 · Order: OK'], ['nl'], ['pause', 300],
+    ['p', '~/repos/supply-chain-lakehouse '], ['y', '(main)'], ['p', ' $ '], ['type', 'claude'], ['nl'],
+    ['u', '> '], ['type', 'Ingest shipments from the carrier API into Bronze, then build the Silver table: dedupe, cast types, quarantine bad rows'], ['nl'], ['pause', 500],
+    ['c', '● '], ['o', 'Read  ingest/carrier_api.py, bronze/shipments.py'], ['nl'], ['pause', 300],
+    ['c', '● '], ['o', 'Bash  git checkout -b feat/silver-shipments'], ['nl'], ['pause', 300],
+    ['c', '● '], ['o', 'Write ingest/carrier_api.py  '], ['dim', '(paginated REST client, retries)'], ['nl'], ['pause', 300],
+    ['c', '● '], ['o', 'Write silver/shipments.py     '], ['dim', '(PySpark, MERGE into Delta)'], ['nl'], ['pause', 300],
+    ['c', '● '], ['o', 'Bash  run on sample data'], ['nl'], ['pause', 600],
+    ['ok', '  ✓ 48,213 rows → 47,980 Silver · 233 quarantined (null shipment_id)'], ['nl'], ['pause', 400],
+    ['c', '● '], ['o', 'I review the diff, then'], ['nl'], ['pause', 300],
     ['c', '● '], ['o', 'Bash  gh pr create --fill'], ['nl'], ['pause', 300],
-    ['ok', '  ✓ Pull request opened, ready for review'],
+    ['ok', '  ✓ Pull request opened, ready for review'], ['nl'],
+    ['dim', '(example workflow · this CV was built the same way)'],
   ];
   const out = $('#termOut'), tbody = $('#termBody'), tform = $('#termForm'), tin = $('#termInput');
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -742,7 +744,7 @@
   async function playDemo() {
     const id = ++demoRun; skip = false; demoActive = true;
     out.innerHTML = ''; tform.hidden = true;
-    print(sp('dim', '# Replay: the Claude Code session that built this CV (click to skip)'));
+    print(sp('dim', '# Replay: an example Claude Code data workflow (click to skip)'));
     const live = document.createElement('span'); out.append(live);
     let html = '';
     const paint = cur => { live.innerHTML = html + (cur ? '<span class="cursor"></span>' : ''); tbody.scrollTop = tbody.scrollHeight; };
@@ -863,7 +865,7 @@
       print(`cat: ${esc(arg)}: No such file or directory`);
     } },
     claude: { run() {
-      print(`${sp('c', '●')} Claude Code needs a real terminal and an API key, not a CV. Here is the replay instead…`);
+      print(`${sp('c', '●')} Claude Code needs a real terminal and an API key, not a CV. Here is an example workflow instead…`);
       setTimeout(replay, 1200);
     } },
     sudo: { async run(arg) {
