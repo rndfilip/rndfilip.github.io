@@ -12,8 +12,10 @@
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 <style>
   /* ================= Tokens ================= */
+  /* Accents are tuned per theme: darker teal/blue on white (WCAG AA for text), brighter on dark.
+     The sidebar is navy in both themes and keeps the bright variants (see aside). */
   :root {
-    --accent: #f2c811; --accent-2: #2bb3a3; --accent-3: #4f7cff;
+    --accent: #f2c811; --accent-2: #0f7a6f; --accent-3: #2856d6;
     --navy: #13233f;
     --desk: #d9dde4; --card: #ffffff; --ink: #1c2433; --head: #13233f; --muted: #6a7385;
     --line: #e3e7ee; --hover: #f3f6fb; --side: #13233f; --side-ink: #dfe6f3; --side-muted: #9fadc6;
@@ -22,12 +24,8 @@
     --pad: 9mm; --top: 10mm;
     color-scheme: light;
   }
-  :root[data-accent="lakehouse"] { --accent: #ff8a50; --accent-2: #ffb300; --accent-3: #e8541e; }
-  :root[data-accent="ocean"]     { --accent: #5fd4e6; --accent-2: #26a69a; --accent-3: #1e88e5; }
-  :root[data-accent="violet"]    { --accent: #d0a2ff; --accent-2: #f472b6; --accent-3: #7c3aed; }
-  :root[data-accent="mint"]      { --accent: #86e3b0; --accent-2: #34c38f; --accent-3: #12a26b; }
-
   :root[data-theme="dark"] {
+    --accent-2: #2bb3a3; --accent-3: #7aa0ff;
     --desk: #070c16; --card: #101a2c; --ink: #dfe6f3; --head: #ffffff; --muted: #93a0b8;
     --line: #26334c; --hover: #17233a; --side: #0b1424; --side-ink: #dfe6f3; --side-muted: #8494b2;
     --tip-bg: #f2f5fa; --tip-ink: #13233f; --term: #060b15;
@@ -35,6 +33,7 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
+      --accent-2: #2bb3a3; --accent-3: #7aa0ff;
       --desk: #070c16; --card: #101a2c; --ink: #dfe6f3; --head: #ffffff; --muted: #93a0b8;
       --line: #26334c; --hover: #17233a; --side: #0b1424; --side-ink: #dfe6f3; --side-muted: #8494b2;
       --tip-bg: #f2f5fa; --tip-ink: #13233f; --term: #060b15;
@@ -56,7 +55,8 @@
           grid-template-columns: 66mm 1fr; box-shadow: 0 6px 30px rgba(0,0,0,.25); transition: background .25s; }
 
   /* ================= Sidebar ================= */
-  aside { background: var(--side); color: var(--side-ink); padding: var(--top) 7.5mm 9mm; display: flex; flex-direction: column; gap: 5mm; }
+  aside { --accent-2: #2bb3a3; --accent-3: #4f7cff;
+          background: var(--side); color: var(--side-ink); padding: var(--top) 7.5mm 9mm; display: flex; flex-direction: column; gap: 5mm; }
   .chart { height: 15mm; display: flex; align-items: flex-end; gap: 2mm; border-bottom: 1px solid rgba(255,255,255,.18); }
   .chart span { flex: 1; border-radius: 2px 2px 0 0; background: var(--accent); transform-origin: bottom;
                 animation: grow .9s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 60ms); transition: background .3s; }
@@ -101,6 +101,10 @@
 
   .lang { display: grid; grid-template-columns: auto 1fr; gap: .8mm 4mm; font-size: 8.2pt; }
   .lang span:nth-child(even) { color: var(--side-muted); }
+  .hobbies li { display: flex; align-items: baseline; gap: 2mm; margin-bottom: 1.1mm; font-size: 8.2pt; }
+  .hobbies i { color: var(--accent-2); font-size: 10pt; flex: none; position: relative; top: .35mm; }
+  .hobbies b { font-weight: 600; color: #fff; }
+  .hobbies small { font-size: 7.6pt; color: var(--side-muted); }
   .hint { margin-top: auto; font-size: 7.2pt; color: var(--side-muted); display: flex; gap: 1.5mm; align-items: center; }
 
   /* ================= Main ================= */
@@ -111,10 +115,6 @@
 
   .toolbar { display: flex; align-items: center; gap: 1.5mm; margin: -3.5mm 0 -2mm; flex-wrap: wrap; }
   .toolbar .sp { flex: 1; }
-  .sw { width: 4.2mm; height: 4.2mm; border-radius: 50%; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--line);
-        background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%); transition: transform .15s; }
-  .sw:hover { transform: scale(1.15); }
-  .sw[aria-pressed="true"] { box-shadow: 0 0 0 1.5px var(--head); }
   .btn { display: inline-flex; align-items: center; gap: 1.2mm; padding: 1.1mm 2.4mm; border-radius: 6px;
          border: 1px solid var(--line); font-size: 7.6pt; font-weight: 600; color: var(--muted); transition: .15s; }
   .btn:hover { color: var(--head); border-color: var(--accent-3); background: var(--hover); }
@@ -220,6 +220,11 @@
   .node.sv { --k: var(--silver); }
   .node.gd { --k: var(--gold); }
   .node.bi { --k: var(--accent-2); }
+  .detail[data-node="src"] { --k: var(--accent-3); }
+  .detail[data-node="bz"] { --k: var(--bronze); }
+  .detail[data-node="sv"] { --k: var(--silver); }
+  .detail[data-node="gd"] { --k: var(--gold); }
+  .detail[data-node="bi"] { --k: var(--accent-2); }
   .pipe { height: 2px; position: relative;
           background: repeating-linear-gradient(90deg, var(--accent-3) 0 3px, transparent 3px 7px); background-size: 7px 2px;
           animation: flow .6s linear infinite; }
@@ -304,7 +309,8 @@
   /* ================= Print: static A4 ================= */
   @page { size: A4; margin: 0; }
   @media print {
-    :root, :root[data-theme="dark"] {
+    :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+      --accent-2: #0f7a6f; --accent-3: #2856d6;
       --desk: #fff; --card: #fff; --ink: #1c2433; --head: #13233f; --muted: #6a7385; --line: #e3e7ee; --hover: transparent;
       --side: #13233f; --side-muted: #9fadc6;
     }
@@ -387,19 +393,22 @@
       <div class="lang"><span>Czech</span><span>Native</span><span>English</span><span>C1</span><span>Polish</span><span>Learning</span></div>
     </div>
 
+    <div>
+      <h3><i class="ph-bold ph-coffee"></i>Hobbies</h3>
+      <ul class="hobbies">
+        <li><i class="ph ph-tennis-ball"></i><span><b>Sports</b> <small>tennis&nbsp;· squash&nbsp;· badminton&nbsp;· football</small></span></li>
+        <li><i class="ph ph-person-simple-run"></i><span><b>Running</b></span></li>
+        <li><i class="ph ph-books"></i><span><b>Culture</b> <small>books&nbsp;· films&nbsp;· games</small></span></li>
+        <li><i class="ph ph-heart"></i><span><b>Family</b></span></li>
+      </ul>
+    </div>
+
     <div class="hint"><i class="ph ph-cursor-click"></i>Click a skill to cross-filter the CV</div>
   </aside>
 
   <!-- ================= Main ================= -->
   <main>
     <div class="toolbar">
-      <div id="accents" style="display:flex;gap:1.3mm" aria-label="Colour theme">
-        <button class="sw" data-a="" style="--a:#f2c811;--b:#4f7cff" data-tip="Report" aria-label="Report colours"></button>
-        <button class="sw" data-a="lakehouse" style="--a:#ff8a50;--b:#e8541e" data-tip="Lakehouse" aria-label="Lakehouse colours"></button>
-        <button class="sw" data-a="ocean" style="--a:#5fd4e6;--b:#1e88e5" data-tip="Ocean" aria-label="Ocean colours"></button>
-        <button class="sw" data-a="violet" style="--a:#d0a2ff;--b:#7c3aed" data-tip="Violet" aria-label="Violet colours"></button>
-        <button class="sw" data-a="mint" style="--a:#86e3b0;--b:#12a26b" data-tip="Mint" aria-label="Mint colours"></button>
-      </div>
       <span class="sp"></span>
       <button class="btn clear" id="clear" hidden><i class="ph ph-funnel-x"></i><span id="clearLbl">Clear</span></button>
       <button class="btn" id="expand"><i class="ph ph-arrows-out-simple"></i><span>Expand all</span></button>
@@ -593,9 +602,9 @@
       <!-- Education -->
       <div class="pane" id="p-edu" role="tabpanel" hidden>
         <h2><i class="ph-bold ph-graduation-cap"></i>Education</h2>
+        <div class="edu" id="e3" data-tags="python ai gcp"><span class="t">Data Science Bootcamp</span><span class="y">2023</span><span class="s">Le Wagon · 3-month intensive · Python, pandas, NumPy, scikit-learn, machine learning</span></div>
         <div class="edu" id="e1" data-tags="finance"><span class="t">Ing., Corporate Management &amp; Economics</span><span class="y">2019</span><span class="s">Brno University of Technology · Faculty of Business and Management</span></div>
         <div class="edu" id="e2" data-tags="finance"><span class="t">Bc., Economics &amp; Management</span><span class="y">2017</span><span class="s">Mendel University in Brno · Faculty of Business and Economics</span></div>
-        <div class="edu" id="e3" data-tags="python ai gcp"><span class="t">Data Science Bootcamp</span><span class="y">2023</span><span class="s">Le Wagon · 3-month intensive · Python, pandas, NumPy, scikit-learn, machine learning</span></div>
       </div>
     </section>
   </main>
@@ -624,15 +633,6 @@
   const savedTheme = store.get('cv-theme'); if (savedTheme) root.dataset.theme = savedTheme;
   paintTheme();
   themeBtn.onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; store.set('cv-theme', root.dataset.theme); paintTheme(); };
-
-  /* ---------- accent palettes ---------- */
-  const swatches = $$('.sw');
-  const setAccent = a => {
-    if (a) root.dataset.accent = a; else delete root.dataset.accent;
-    swatches.forEach(s => s.setAttribute('aria-pressed', String(s.dataset.a === a)));
-    store.set('cv-accent', a);
-    if (detail.dataset.node) showNode(detail.dataset.node);
-  };
 
   /* ---------- print ---------- */
   $('#print').onclick = () => window.print();
@@ -705,15 +705,12 @@
     const n = NODES[key], el = $(`.node[data-node="${key}"]`);
     detail.dataset.node = key;
     nodes.forEach(b => b.setAttribute('aria-pressed', String(b === el)));
-    detail.style.setProperty('--k', getComputedStyle(el).getPropertyValue('--k'));
     detail.innerHTML = `<h4><i class="ph-duotone ${n.icon}"></i>${n.title}</h4><p>${n.text}</p>
       <div class="tags">${n.tags.map(t => `<span>${t}</span>`).join('')}</div>`;
     detail.style.animation = 'none'; void detail.offsetWidth; detail.style.animation = '';
   }
   nodes.forEach(b => b.onclick = () => showNode(b.dataset.node));
   showNode('bz');
-  swatches.forEach(s => s.onclick = () => setAccent(s.dataset.a));
-  setAccent(store.get('cv-accent') || '');
 
   /* ---------- interactive terminal ---------- */
   // Intro: replay of an example Claude Code data-engineering workflow; afterwards a live prompt.
@@ -777,7 +774,6 @@
   /* commands */
   const lvlName = (v, ai) => ai && v + ai >= 5 ? 'expert with AI' : ({ 5: 'expert', 4: 'advanced', 3: 'intermediate', 2: 'working knowledge' })[v] || '';
   const TABS = { experience: 'p-exp', pipeline: 'p-pipe', ai: 'p-ai', education: 'p-edu' };
-  const PALETTES = { report: '', lakehouse: 'lakehouse', ocean: 'ocean', violet: 'violet', mint: 'mint' };
   const FILES = { 'cv.md': 'whoami', 'skills.json': 'skills', 'experience.log': 'experience', 'pipeline.py': 'pipeline', 'contact.vcf': 'contact' };
   const tagEls = () => $$('.skills li[data-tag], .chips [data-tag]');
   const tagName = el => clean(el.querySelector('span') || el);
@@ -848,13 +844,6 @@
       root.dataset.theme = want; store.set('cv-theme', want); paintTheme();
       print(`${sp('ok', '✓')} Theme: ${want}`);
     } },
-    palette: { a: '[name]', d: 'report | lakehouse | ocean | violet | mint', run(arg) {
-      if (!arg) return print('palettes: ' + Object.keys(PALETTES).map(k => PALETTES[k] === (root.dataset.accent || '') ? sp('u', k + '*') : k).join('  '));
-      const key = Object.keys(PALETTES).find(k => k.startsWith(arg));
-      if (key === undefined) return print('usage: palette <' + Object.keys(PALETTES).join(' | ') + '>');
-      setAccent(PALETTES[key]);
-      print(`${sp('ok', '✓')} Palette: ${key}`);
-    } },
     replay: { d: 'replay the Claude Code demo', run: replay },
     clear: { d: 'clear the screen', run() { out.innerHTML = ''; } },
     /* hidden extras */
@@ -885,10 +874,10 @@
     date: { run() { print(esc(new Date().toString())); } },
     exit: { run() { print("Nice try. Good pipelines don't exit. (try: clear)"); } },
   };
-  const ALIAS = { '?': 'help', man: 'help', about: 'whoami', exp: 'experience', edu: 'education', cls: 'clear', color: 'palette', colour: 'palette' };
+  const ALIAS = { '?': 'help', man: 'help', about: 'whoami', exp: 'experience', edu: 'education', cls: 'clear' };
   const NAMES = Object.keys(CMDS).filter(k => CMDS[k].d);
   const ARGS = { filter: () => [...tagEls().map(e => tagName(e).toLowerCase().split(' ')[0]), 'off'], open: () => Object.keys(TABS),
-                 theme: () => ['dark', 'light'], palette: () => Object.keys(PALETTES), cat: () => Object.keys(FILES) };
+                 theme: () => ['dark', 'light'], cat: () => Object.keys(FILES) };
 
   const lev = (a, b) => {
     const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
