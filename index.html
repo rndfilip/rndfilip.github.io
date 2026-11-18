@@ -12,10 +12,11 @@
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 <style>
   /* ================= Tokens ================= */
-  /* Accents are tuned per theme: darker teal/blue on white (WCAG AA for text), brighter on dark.
-     The sidebar is navy in both themes and keeps the bright variants (see aside). */
+  /* Mono palette: navy and slate tones with one highlight colour (--accent, Power BI yellow).
+     --accent-2/3 are tuned per theme for WCAG AA text contrast; the navy sidebar uses lighter slates (see aside).
+     The dark main panel is neutral graphite so it stays distinct from the navy sidebar. */
   :root {
-    --accent: #f2c811; --accent-2: #0f7a6f; --accent-3: #2856d6;
+    --accent: #f2c811; --accent-2: #4a5873; --accent-3: #1d3a6e;
     --navy: #13233f;
     --desk: #d9dde4; --card: #ffffff; --ink: #1c2433; --head: #13233f; --muted: #6a7385;
     --line: #e3e7ee; --hover: #f3f6fb; --side: #13233f; --side-ink: #dfe6f3; --side-muted: #9fadc6;
@@ -25,18 +26,18 @@
     color-scheme: light;
   }
   :root[data-theme="dark"] {
-    --accent-2: #2bb3a3; --accent-3: #7aa0ff;
-    --desk: #070c16; --card: #101a2c; --ink: #dfe6f3; --head: #ffffff; --muted: #93a0b8;
-    --line: #26334c; --hover: #17233a; --side: #0b1424; --side-ink: #dfe6f3; --side-muted: #8494b2;
-    --tip-bg: #f2f5fa; --tip-ink: #13233f; --term: #060b15;
+    --accent-2: #9aa8c0; --accent-3: #c9d6ee;
+    --desk: #0b0d11; --card: #161a21; --ink: #dfe6f3; --head: #ffffff; --muted: #93a0b8;
+    --line: #2a303b; --hover: #1e232c; --side: #0b1424; --side-ink: #dfe6f3; --side-muted: #8494b2;
+    --tip-bg: #f2f5fa; --tip-ink: #13233f; --term: #0b0e13;
     color-scheme: dark;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --accent-2: #2bb3a3; --accent-3: #7aa0ff;
-      --desk: #070c16; --card: #101a2c; --ink: #dfe6f3; --head: #ffffff; --muted: #93a0b8;
-      --line: #26334c; --hover: #17233a; --side: #0b1424; --side-ink: #dfe6f3; --side-muted: #8494b2;
-      --tip-bg: #f2f5fa; --tip-ink: #13233f; --term: #060b15;
+      --accent-2: #9aa8c0; --accent-3: #c9d6ee;
+      --desk: #0b0d11; --card: #161a21; --ink: #dfe6f3; --head: #ffffff; --muted: #93a0b8;
+      --line: #2a303b; --hover: #1e232c; --side: #0b1424; --side-ink: #dfe6f3; --side-muted: #8494b2;
+      --tip-bg: #f2f5fa; --tip-ink: #13233f; --term: #0b0e13;
       color-scheme: dark;
     }
   }
@@ -55,13 +56,18 @@
           grid-template-columns: 66mm 1fr; box-shadow: 0 6px 30px rgba(0,0,0,.25); transition: background .25s; }
 
   /* ================= Sidebar ================= */
-  aside { --accent-2: #2bb3a3; --accent-3: #4f7cff;
+  aside { --accent-2: #9fb0cc; --accent-3: #c9d6ee;
           background: var(--side); color: var(--side-ink); padding: var(--top) 7.5mm 9mm; display: flex; flex-direction: column; gap: 5mm; }
   .chart { height: 15mm; display: flex; align-items: flex-end; gap: 2mm; border-bottom: 1px solid rgba(255,255,255,.18); }
   .chart span { flex: 1; border-radius: 2px 2px 0 0; background: var(--accent); transform-origin: bottom;
                 animation: grow .9s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i) * 60ms); transition: background .3s; }
-  .chart span:nth-child(3n+2) { background: var(--accent-2); }
-  .chart span:nth-child(3n) { background: var(--accent-3); }
+  .chart { gap: 1.2mm; }
+  .chart .r1 { background: color-mix(in srgb, var(--accent-3) 30%, var(--side)); }
+  .chart .r2 { background: color-mix(in srgb, var(--accent-3) 50%, var(--side)); }
+  .chart .r3 { background: color-mix(in srgb, var(--accent-3) 72%, var(--side)); }
+  .chart .r4 { background: var(--accent-3); }
+  .chart .r5 { background: var(--accent); }
+  .chart span:hover { filter: brightness(1.2); }
   @keyframes grow { from { transform: scaleY(0); } }
   h1 { margin-top: -1mm; font-size: 21pt; font-weight: 800; line-height: 1.05; color: #fff; letter-spacing: .5px; }
   h1 b { color: var(--accent); font-weight: 800; display: block; transition: color .3s; }
@@ -134,9 +140,7 @@
   .kpi { border: 1px solid var(--line); border-radius: 7px; padding: 2mm 2.5mm 2mm 3.2mm; position: relative; overflow: hidden; transition: border-color .2s, transform .2s; }
   .kpi:hover { border-color: var(--accent-3); transform: translateY(-1px); }
   .kpi::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 1mm; background: var(--accent); }
-  .kpi:nth-child(2)::before { background: var(--accent-2); }
-  .kpi:nth-child(3)::before { background: var(--accent-3); }
-  .kpi:nth-child(4)::before { background: var(--head); }
+  .kpi:nth-child(n+2)::before { background: var(--line); }
   .kpi b { display: block; font-size: 17pt; font-weight: 800; color: var(--head); line-height: 1.05; font-variant-numeric: tabular-nums; }
   .kpi span { font-size: 7.3pt; color: var(--muted); line-height: 1.25; display: block; margin-top: .5mm; }
 
@@ -149,11 +153,11 @@
          display: flex; align-items: center; padding: 0 1.4mm; white-space: nowrap; overflow: hidden; cursor: pointer;
          transition: opacity .2s, filter .15s; transform-origin: left; animation: grow-x .8s cubic-bezier(.2,.8,.2,1) both; }
   .seg:hover { filter: brightness(1.1) saturate(1.1); }
-  .seg.c1 { background: color-mix(in srgb, var(--accent) 45%, var(--card)); }
-  .seg.c2 { background: color-mix(in srgb, var(--accent) 75%, var(--card)); }
-  .seg.c3 { background: var(--accent-2); color: #fff; }
-  .seg.c4 { background: var(--accent-3); color: #fff; }
-  .seg.c5 { background: var(--head); color: var(--card); }
+  .seg.c1 { background: color-mix(in srgb, var(--accent-3) 18%, var(--card)); color: var(--head); }
+  .seg.c2 { background: color-mix(in srgb, var(--accent-3) 32%, var(--card)); color: var(--head); }
+  .seg.c3 { background: color-mix(in srgb, var(--accent-3) 75%, var(--card)); color: var(--card); }
+  .seg.c4 { background: var(--accent-3); color: var(--card); }
+  .seg.c5 { background: var(--accent); color: #13233f; }
   .seg.side { background: var(--card); border: 1.5px solid var(--accent-3); color: var(--accent-3); }
   .ms-lane { height: 4mm; margin-bottom: 0; }
   /* milestones: label sits left of its dot */
@@ -286,6 +290,8 @@
          opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s; }
   #tip.show { opacity: 1; transform: none; }
   #tip b { color: var(--accent-3); }
+  #tip.side { background: #f2f5fa; color: #13233f; }
+  #tip.side b { color: #1d3a6e; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -310,7 +316,7 @@
   @page { size: A4; margin: 0; }
   @media print {
     :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
-      --accent-2: #0f7a6f; --accent-3: #2856d6;
+      --accent-2: #4a5873; --accent-3: #1d3a6e;
       --desk: #fff; --card: #fff; --ink: #1c2433; --head: #13233f; --muted: #6a7385; --line: #e3e7ee; --hover: transparent;
       --side: #13233f; --side-muted: #9fadc6;
     }
@@ -337,10 +343,19 @@
 
   <!-- ================= Sidebar ================= -->
   <aside>
-    <div class="chart" aria-hidden="true">
-      <span style="height:30%;--i:0"></span><span style="height:45%;--i:1"></span><span style="height:38%;--i:2"></span>
-      <span style="height:58%;--i:3"></span><span style="height:52%;--i:4"></span><span style="height:72%;--i:5"></span>
-      <span style="height:66%;--i:6"></span><span style="height:86%;--i:7"></span><span style="height:100%;--i:8"></span>
+    <!-- Logo: career as a chart. One bar per year, height = role level, colour = role. -->
+    <div class="chart" role="img" aria-label="Career growth 2016–2026: Accounts Payable to Senior Advisor">
+      <span class="r1" style="height:22%;--i:0" data-tip="<b>2016</b> · Accounts Payable"></span>
+      <span class="r2" style="height:38%;--i:1" data-tip="<b>2017</b> · Finance Analyst"></span>
+      <span class="r2" style="height:38%;--i:2" data-tip="<b>2018</b> · Finance Analyst"></span>
+      <span class="r3" style="height:58%;--i:3" data-tip="<b>2019</b> · Power BI Specialist"></span>
+      <span class="r3" style="height:58%;--i:4" data-tip="<b>2020</b> · Power BI Specialist"></span>
+      <span class="r3" style="height:58%;--i:5" data-tip="<b>2021</b> · Power BI Specialist"></span>
+      <span class="r4" style="height:78%;--i:6" data-tip="<b>2022</b> · BI Supervisor"></span>
+      <span class="r4" style="height:78%;--i:7" data-tip="<b>2023</b> · BI Supervisor"></span>
+      <span class="r4" style="height:78%;--i:8" data-tip="<b>2024</b> · BI Supervisor"></span>
+      <span class="r5" style="height:100%;--i:9" data-tip="<b>2025</b> · Senior Advisor"></span>
+      <span class="r5" style="height:100%;--i:10" data-tip="<b>2026</b> · Senior Advisor"></span>
     </div>
 
     <div>
@@ -987,7 +1002,7 @@
       const n = $$('.step, .edu').filter(s => has(s, el.dataset.tag)).length;
       html += `<br><b>${n} role${n === 1 ? '' : 's'}</b> · click to filter`;
     } else if (el.classList.contains('seg')) html += '<br><b>click</b> to open';
-    tip.innerHTML = html; tip.classList.add('show');
+    tip.innerHTML = html; tip.classList.add('show'); tip.classList.toggle('side', !!el.closest('aside'));
   });
   document.addEventListener('mousemove', e => {
     if (!tip.classList.contains('show')) return;
