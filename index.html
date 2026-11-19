@@ -10,6 +10,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<!-- GoatCounter: cookieless visit analytics (https://filipcv.goatcounter.com).
+     A link tagged ?ref=<company> is recorded as the referrer, so visits and clicks show which application they came from.
+     Own visits: open the page once with #toggle-goatcounter to stop counting in that browser. -->
+<script>
+  (() => {
+    const ref = new URLSearchParams(location.search).get('ref');
+    window.goatcounter = { path: location.pathname || '/' };
+    if (ref) window.goatcounter.referrer = ref.slice(0, 60);
+  })();
+</script>
+<script data-goatcounter="https://filipcv.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <style>
   /* ================= Tokens ================= */
   /* Mono palette: navy and slate tones with one highlight colour (--accent, Power BI yellow).
@@ -634,6 +645,8 @@
   const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } },
                   set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* analytics event (GoatCounter); a no-op when the script is blocked or not loaded yet */
+  const track = (name, title) => { try { window.goatcounter?.count?.({ path: name, title: title || name, event: true }); } catch {} };
 
   /* ---------- skill bars ---------- */
   $$('.bar').forEach(b => {
@@ -647,10 +660,10 @@
   const paintTheme = () => { themeBtn.querySelector('i').className = 'ph ' + (isDark() ? 'ph-sun' : 'ph-moon'); };
   const savedTheme = store.get('cv-theme'); if (savedTheme) root.dataset.theme = savedTheme;
   paintTheme();
-  themeBtn.onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; store.set('cv-theme', root.dataset.theme); paintTheme(); };
+  themeBtn.onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; store.set('cv-theme', root.dataset.theme); paintTheme(); track('theme-' + root.dataset.theme); };
 
   /* ---------- print ---------- */
-  $('#print').onclick = () => window.print();
+  $('#print').onclick = () => { track('click-pdf', 'PDF'); window.print(); };
 
   /* ---------- expanders ---------- */
   const toggle = (btn, open) => {
@@ -676,7 +689,7 @@
     t.setAttribute('aria-selected', on); $('#' + t.getAttribute('aria-controls')).hidden = !on;
     if (on && id === 'p-ai') startTerminal();
   });
-  tabs.forEach(t => t.onclick = () => select(t.getAttribute('aria-controls')));
+  tabs.forEach(t => t.onclick = () => { select(t.getAttribute('aria-controls')); track('tab-' + t.getAttribute('aria-controls').slice(2)); });
 
   /* ---------- timeline ---------- */
   const T0 = 2016, T1 = 2027;
@@ -911,6 +924,7 @@
     const [raw, ...rest] = line.split(/\s+/);
     const name = ALIAS[raw.toLowerCase()] || raw.toLowerCase();
     const cmd = CMDS[name];
+    track('term-' + (!cmd ? 'unknown' : name === 'sudo' && /^hire\s+filip$/i.test(rest.join(' ')) ? 'hire' : name));
     if (!cmd) {
       const best = NAMES.map(n => [n, lev(name, n)]).sort((x, y) => x[1] - y[1])[0];
       return print(`zsh: command not found: ${esc(raw)}. ` + (best[1] <= 2 ? `Did you mean ${sp('u', best[0])}?` : `Type ${sp('u', 'help')}.`));
@@ -964,7 +978,9 @@
       return item;
     }));
   };
-  $('#showPhone').onclick = revealPhone;
+  $('#showPhone').onclick = () => { track('click-phone', 'Show phone'); revealPhone(); };
+  $('.contact a[href^="mailto:"]').addEventListener('click', () => track('click-email', 'Email'));
+  $('.contact a[href*="linkedin.com"]').addEventListener('click', () => track('click-linkedin', 'LinkedIn'));
 
   /* ---------- cross-filter (slicer) ---------- */
   const page = $('.page'), clear = $('#clear');
@@ -972,6 +988,7 @@
   let active = null;
   const filter = tag => {
     active = active === tag ? null : tag;
+    if (active) track('filter-' + active);
     $$('[data-tag]').forEach(el => el.classList.toggle('on', el.dataset.tag === active));
     page.classList.toggle('filtering', !!active);
     $$('.step, .edu, .seg, .node').forEach(el => el.classList.toggle('match', !!active && has(el, active)));
